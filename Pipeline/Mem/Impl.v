@@ -156,12 +156,21 @@ Section Impl.
   Local Definition arbiterHasResps :=
     Arbiter.Ifc.hasResps
       arbiter
-      (fun ty => Call res: Maybe (ChannelDRes ArbiterTag) <- "routerFirst"(); Ret (toKamiRes #res)).
+      (* TODO: LLEE: packing calls *)
+      (* (fun ty => Call res: Maybe (ChannelDRes ArbiterTag) <- "routerFirst"(); Ret (toKamiRes #res)). *)
+      (fun ty =>
+        Call res : Bit (Syntax.size (Maybe (ChannelDRes ArbiterTag))) <- "routerFirst" ();
+        LET resPkt : Maybe (ChannelDRes ArbiterTag) <- unpack (Maybe (ChannelDRes ArbiterTag)) #res;
+        Ret (toKamiRes #resPkt)).
 
   Local Definition arbiterGetResps :=
     Arbiter.Ifc.getResps
       arbiter
-      (fun ty => Call res: Maybe (ChannelDRes ArbiterTag) <- "routerFirst"(); Ret (toKamiRes #res))
+      (* TODO: LLEE: packing calls *)
+      (* (fun ty => Call res: Maybe (ChannelDRes ArbiterTag) <- "routerFirst"(); Ret (toKamiRes #res)) *)
+      (fun ty => Call res: Bit (Syntax.size (Maybe (ChannelDRes ArbiterTag))) <- "routerFirst"();
+        LET resPkt : Maybe (ChannelDRes ArbiterTag) <- unpack (Maybe (ChannelDRes ArbiterTag)) #res;
+        Ret (toKamiRes #resPkt))
       (fun ty => Call res: Bool  <- "routerDeq"(); Ret #res).
 
   Local Definition cbReqToArbiterReq ty (inReq: @CompletionBuffer.Ifc.OutReq completionBufferParams @# ty):
@@ -179,7 +188,9 @@ Section Impl.
   Defined.
   
   Local Definition routerSendReq ty (req: ty ArbiterOutReq): ActionT ty (Maybe Void) :=
-    Call ret: Bool <- "routerSendReq" ((fromKamiReq #req) : ChannelAReq ArbiterTag);
+    (* TODO: LLEE: packing calls *)
+    (* Call ret: Bool <- "routerSendReq" ((fromKamiReq #req) : ChannelAReq ArbiterTag); *)
+    Call ret: Bool <- "routerSendReq" (pack (fromKamiReq #req) : Bit (Syntax.size (ChannelAReq ArbiterTag)));
     Ret ((STRUCT { "valid" ::= #ret ;
                    "data" ::= $$(getDefaultConst Void) }): Maybe Void @# ty).
 

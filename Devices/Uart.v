@@ -37,13 +37,17 @@ Section device.
                                                    "addr" ::= SignExtendTruncLsb LgMemSz (req @% "addr");
                                                    "data" ::= pack (req @% "data")
                                                  } : UartWrite @# ty);
-                   Call @^"writeUART" (#writeRq : _);
+                   (* TODO: LLEE: packing calls. *)
+                   (* Call @^"writeUART" (#writeRq : _); *)
+                   Call @^"writeUART" (pack #writeRq : _);
                    Ret $$true);
        readReq := (fun ty addr =>
                      LET readRq : UartRead <- (STRUCT {
                                                    "addr" ::= SignExtendTruncLsb LgMemSz addr
                                                  } : UartRead @# ty);
-                     Call memData : Bit 64 <- @^"readUART" (#readRq : UartRead);
+                     (* TODO: LLEE: packing calls *)
+                     (* Call memData : Bit 64 <- @^"readUART" (#readRq : UartRead); *)
+                     Call memData : Bit 64 <- @^"readUART" (pack #readRq : Bit (Syntax.size UartRead));
                      Write "uartRes": Maybe Data <- Valid (ZeroExtendTruncLsb Rlen #memData): Maybe Data @# ty;
                      Retv);
        readRes := (fun ty =>

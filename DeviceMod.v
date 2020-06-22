@@ -75,9 +75,6 @@ Section DeviceIfc.
     LETA ret <- @Router.Ifc.sendReq _ router ty inReq;
     Ret #ret.
   
-  Local Close Scope kami_expr.
-  Local Close Scope kami_action.
-
   Local Definition deviceBaseMod :=
     MODULE {
         Registers (concat (map (fun dev => @Device.regs procParams dev tagK) (@devices _ deviceTree))) with
@@ -87,13 +84,23 @@ Section DeviceIfc.
         Rules rules with
         Rule "DevPollingDone" := (Router.Ifc.finishRule router _) with
             
-
-        Method "routerSendReq" (req: ChannelAReq tagK): Bool := routerSendReq _ req with
+        (* TODO: LLEE: packing calls. *)
+        (* Method "routerSendReq" (req: ChannelAReq tagK): Bool := routerSendReq _ req with *)
+        Method "routerSendReq" (req: Bit (Syntax.size (ChannelAReq tagK))) : Bool :=
+          LET reqPkt : ChannelAReq tagK <- unpack _ #req;
+          (routerSendReq _ reqPkt) with
         Method "routerDeq" (): Bool
           := LETA res : Maybe (ChannelDRes tagK) <- Fifo.Ifc.deq fifo;
              Ret (#res @% "valid") with
-        Method "routerFirst" (): Maybe (ChannelDRes tagK) := Fifo.Ifc.first fifo
+        (* TODO: LLEE: packing calls. *)
+        (* Method "routerFirst" (): Maybe (ChannelDRes tagK) := Fifo.Ifc.first fifo *)
+        Method "routerFirst" (): Bit (Syntax.size (Maybe (ChannelDRes tagK))) :=
+          LETA res : Maybe (ChannelDRes tagK) <- Fifo.Ifc.first fifo;
+          Ret (pack #res)
       }.
+
+  Local Close Scope kami_expr.
+  Local Close Scope kami_action.
 
   Definition deviceMod :=
     fold_right

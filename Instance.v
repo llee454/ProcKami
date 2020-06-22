@@ -4,7 +4,10 @@
   in generating the model's Verilog.
 *)
 
-Require Import Kami.All Kami.Compiler.Compiler Kami.Compiler.Rtl Kami.Compiler.UnverifiedIncompleteCompiler.
+Require Import Kami.All.
+Require Import Kami.Compiler.Compiler.
+Require Import Kami.Compiler.Rtl.
+Require Import Kami.Compiler.UnverifiedIncompleteCompiler.
 Require Import ProcKami.FU.
 Require Import ProcKami.Pipeline.ProcessorCore.
 Require Import ProcKami.MemOps.
@@ -27,16 +30,18 @@ Require Import ProcKami.Devices.Uart.
 Definition supportedExts
   :  list SupportedExt
   := [
-      Build_SupportedExt "I" true true ;
-        Build_SupportedExt "M" true true ;
-        Build_SupportedExt "A" true true ;
-        Build_SupportedExt "F" true true ;
-        Build_SupportedExt "D" true true ;
-        Build_SupportedExt "C" true true ;
-        Build_SupportedExt "S" true true ;
-        Build_SupportedExt "U" true true ;
-        Build_SupportedExt "Zicsr" true false ;
-        Build_SupportedExt "Zifencei" true false
+      Build_SupportedExt "I" true true
+(*
+      Build_SupportedExt "M" true true ;
+      Build_SupportedExt "A" true true ;
+      Build_SupportedExt "F" true true ;
+      Build_SupportedExt "D" true true ;
+      Build_SupportedExt "C" true true ;
+      Build_SupportedExt "S" true true ;
+      Build_SupportedExt "U" true true ;
+      Build_SupportedExt "Zicsr" true false ;
+      Build_SupportedExt "Zifencei" true false
+*)
     ].
 
 Definition allow_misaligned      := false.
@@ -166,4 +171,7 @@ Separate Extraction
          sim_step
          initialize_files_zero
          option_map
+
+         sig_rect
+         and_rect
          .

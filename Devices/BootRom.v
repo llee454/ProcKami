@@ -41,6 +41,12 @@ Section device.
        baseRegs := nil;
        write := (fun _ _ => Ret $$false);
        readReq := (fun ty addr => ReadReqRf "bootRomReadReq" (SignExtendTruncLsb LgMemSz addr : Bit LgMemSz); Retv);
+       (* TODO: LLEE: packing calls *)
        readRes := (fun ty => (Call readData : Array Rlen_over_8 (Bit 8) <- "bootRomReadRes"();
                               Ret ((Valid (pack #readData)): Maybe Data @# ty))); |}.
+(*
+       readRes := (fun ty => (Call readData : Bit (Syntax.size (Array Rlen_over_8 (Bit 8))) <- "bootRomReadRes"();
+                              LET readDataPkt : Array Rlen_over_8 (Bit 8) <- unpack _ #readData;
+                              Ret ((Valid (pack #readDataPkt)): Maybe Data @# ty))); |}.
+*)
 End device.

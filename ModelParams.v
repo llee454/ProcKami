@@ -175,7 +175,7 @@ Section exts.
           FU.allow_inst_misaligned := allow_inst_misaligned;
           FU.misaligned_access := misaligned_access;
           FU.lgGranularity := 3;
-          FU.hasVirtualMem := true |}.
+          FU.hasVirtualMem := false |}. (* TODO: LLEE *)
 
   Section ty.
     Variable ty : Kind -> Type.

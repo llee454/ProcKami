@@ -39,7 +39,7 @@ Section config_reader.
        Read tsr : Bool <- @^"tsr";
        Read tvm : Bool <- @^"tvm";
        Read tw : Bool <- @^"tw";
-       Read fs : Bit 2 <- @^"fs";
+       (* Read fs : Bit 2 <- @^"fs"; *) (* TODO: LLEE: remove this parameter when the F extension is disabled. *)
        LET xs : Bit 2 <- $0;
        Read mxr : Bool <- @^"mxr";
        Read sum : Bool <- @^"sum";
@@ -54,7 +54,8 @@ Section config_reader.
             "tvm"              ::= #tvm;
             "tw"               ::= #tw;
             "extensions"       ::= #extensions;
-            "fs"               ::= #fs;
+            (* "fs"               ::= #fs; *) (* TODO: LLEE *)
+            "fs"               ::= $0;
             "xs"               ::= #xs;
             "mxr"              ::= #mxr;
             "sum"              ::= #sum;

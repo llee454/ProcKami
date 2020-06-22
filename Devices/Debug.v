@@ -30,7 +30,9 @@ Section device.
                               "data" ::= req @% "data";
                               "mask" ::= req @% "mask"
                             } : WriteRqMask LgMemSz Rlen_over_8 (Bit 8) @# ty);
-                   Call "debugWrite" (#writeRq: _);
+                   (* TODO: LLEE: packing calls *)
+                   (* Call "debugWrite" (#writeRq: _); *)
+                   Call "debugWrite" (pack #writeRq : _);
                    Ret $$true);
        readReq := (fun ty addr => System [DispString _ "Debug ReadReq: "; DispHex addr; DispString _ "\n"]; (* ReadReqRf "debugReq" (SignExtendTruncLsb LgMemSz addr : Bit LgMemSz);*) Retv);
        readRes := (fun ty => ((* Call readData : Array Rlen_over_8 (Bit 8) <- "debugRes"(); *)

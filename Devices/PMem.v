@@ -38,9 +38,17 @@ Section device.
                               "data" ::= req @% "data";
                               "mask" ::= req @% "mask"
                             } : WriteRqMask LgMemSz Rlen_over_8 (Bit 8) @# ty);
+                   (* TODO: LLEE: pack calls. *)
                    Call "pMemWrite" (#writeRq: _);
+                   (* Call "pMemWrite" (pack #writeRq : _); *)
                    Ret $$true);
        readReq := (fun ty addr => ReadReqRf "pMemReadReq" (SignExtendTruncLsb LgMemSz addr : Bit LgMemSz); Retv);
+       (* TODO: LLEE: pack calls. *)
        readRes := (fun ty => (Call readData : Array Rlen_over_8 (Bit 8) <- "pMemReadRes"();
                               Ret ((Valid (pack #readData)): Maybe Data @# ty))); |}.
+(*
+       readRes := (fun ty => (Call readData : Bit (Syntax.size (Array Rlen_over_8 (Bit 8))) <- "pMemReadRes"();
+                              LET readDataPkt : Array Rlen_over_8 (Bit 8) <- unpack _ #readData;
+                              Ret ((Valid (pack #readDataPkt)): Maybe Data @# ty))); |}.
+*)
 End device.
